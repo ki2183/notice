@@ -1,19 +1,30 @@
 
-import { ChangeEvent, useCallback, useEffect, useRef, useState } from 'react'
+import { ChangeEvent,  useEffect, useRef, useState } from 'react'
 import './noticeFrame.css'
 import { arrNotice,noticeTypeIMG,noticeTypeTEXT,initialText } from '../noticeType'
-import { useDrag, useDrop } from 'react-dnd'
-import { NativeTypes } from 'react-dnd-html5-backend'
+import NoticeText from './noticeItem/noticeText'
+import NoticeImg from './noticeItem/noticeImg'
+import NoticeModal from './noticeItem/noticeModal'
+import { useAppDispatch, useAppSelector } from '../../../redux/hook'
+import { useNavigate } from 'react-router-dom'
 
-import ReactModal from 'react-modal'
+export type NoticeProps = {
+    curIdx : number;
+    focusRef:Array<HTMLTextAreaElement|null>;
+    moveNotice:(dragIdx:number, dropIdx:number)=>void
+    computeOptionXY:(x:number,y:number,idx:number) => void
+    openModal:()=> void
+}
 
 export default function NoticeFrame(){
 
     const [noticeInfo,setNoticeInfo] = useState<arrNotice>([initialText])
+    const [modalIsOpen, setModalIsOpen] = useState(false);
     const focusRef = useRef<Array<HTMLTextAreaElement|null>>([])
-    const [optionXY,setOptionXY] = useState<{x:number,y:number}>({x:0,y:0})
-
-    useEffect(()=>{console.log(noticeInfo)},[noticeInfo])
+    const [optionXY,setOptionXY] = useState<{x:number,y:number,idx:number}>({x:0,y:0,idx:0})
+    const dispatch = useAppDispatch();
+    const navigate = useNavigate()
+    
 
     function noticeTextHandler(e:ChangeEvent<HTMLTextAreaElement>,idx:number){
         const inputValue = e.target.value
@@ -21,8 +32,7 @@ export default function NoticeFrame(){
         const curText = prevNoticeInfo[idx] as noticeTypeTEXT
         curText.text = inputValue
         setNoticeInfo(prevNoticeInfo)
-
-    }
+    } // 입력저장
 
     function noticeKeyboardHandler(e:React.KeyboardEvent<HTMLTextAreaElement>,idx:number){
 
@@ -104,7 +114,7 @@ export default function NoticeFrame(){
         }
 
 
-    }
+    } //키보드 이벤트 핸들러
 
     function moveNotice(dragIdx:number, dropIdx:number){
         const dropNotice = noticeInfo[dragIdx]
@@ -120,7 +130,7 @@ export default function NoticeFrame(){
         }
 
         setNoticeInfo(prevNoticeInfo)
-    }
+    } //드래그 핸들러
     
     function AddNoticeImg(file: {files: FileList},idx:number){
         console.log(file.files)
@@ -136,16 +146,27 @@ export default function NoticeFrame(){
             }
             setNoticeInfo(prevNoticeInfo)
         }
+    } // 이미지 추가
+
+    function computeOptionXY(x:number,y:number,idx:number){
+        setOptionXY({x:x,y:y,idx:idx})
+    } //옵션 위치 계산
+
+    /* Modal */
+    // #region
+    function delNotice(idx:number){
+        const prevNoticeInfo = [...noticeInfo]
+        if(noticeInfo.length !== 1){
+            prevNoticeInfo.splice(idx,1)
+            setNoticeInfo(prevNoticeInfo)
+        } 
     }
+    function addNotice(idx:number){
+        const prevNoticeInfo = [...noticeInfo]
 
-    function computeOptionXY(x:number,y:number){
-        setOptionXY({x:x,y:y})
-        console.log(x,y)
+        prevNoticeInfo.splice(idx+1,0,{text:''})
+        setNoticeInfo(prevNoticeInfo) 
     }
-
-    useEffect(()=>{console.log(optionXY.x,optionXY.y)},[optionXY])
-
-    const [modalIsOpen, setModalIsOpen] = useState(false);
 
     const openModal = () => {
         setModalIsOpen(true);
@@ -155,38 +176,18 @@ export default function NoticeFrame(){
         setModalIsOpen(false);
     };
 
-    const customStyles = {
-        overlay: {
-          backgroundColor: 'rgba(0, 0, 0, 0.5)', // 배경색 및 투명도 조절
-        },
-        content: {
-          width: '50%', // 너비 조절
-          height: '50%', // 높이 조절
-          margin: 'auto', // 가운데 정렬
-          border: '1px solid #ccc', // 테두리 추가
-          borderRadius: '8px', // 테두리 둥글게 처리
-          padding: '20px', // 내부 간격
-        },
-      };
+
+    // #endregion
 
     return (
         <div className='flex flex-col items-center justify-center'>
-            <div className='optionbutton' style={{left:`${optionXY.x+2}px`,top:`${optionXY.y+2}px`}}>
-                <span>삭제</span>
-                <span className="material-symbols-outlined select-none trash">
-                        delete
-                    </span>
-            </div>
-            <ReactModal
-        isOpen={modalIsOpen}
-        onRequestClose={closeModal}
-        contentLabel="예제 모달"
-        style={customStyles} // 사용자 정의 스타일 적용
-      >
-        <h2>모달 내용</h2>
-        <p>원하는 내용을 여기에 넣을 수 있습니다.</p>
-        <button onClick={closeModal}>모달 닫기</button>
-      </ReactModal>
+            <NoticeModal
+                optionXY={optionXY}
+                delNotice={delNotice}
+                addNotice={addNotice}
+                modalIsOpen={modalIsOpen}
+                closeModal={closeModal}
+            />
 
             <div className='null-notice'/>
             <div className="frame-notice">
@@ -217,174 +218,11 @@ export default function NoticeFrame(){
                         focusRef={focusRef.current}
                         moveNotice={moveNotice}
                         computeOptionXY={computeOptionXY}
-
                     />
                 })}
                 
             </div>
             <div className='null-notice-bottom'/>
-        </div>
-    )
-}
-
-export type NoticeProps = {
-    curIdx : number;
-    focusRef:Array<HTMLTextAreaElement|null>;
-    moveNotice:(dragIdx:number, dropIdx:number)=>void
-    computeOptionXY:(x:number,y:number) => void
-    openModal:()=> void
-}
-
-interface NoticeTextProps extends NoticeProps{
-    AddNoticeImg:(file: { files: FileList },idx:number)=>void
-    noticeTextHandler: (e:ChangeEvent<HTMLTextAreaElement>,idx:number)=>void;
-    noticeKeyboardHandler : (e:React.KeyboardEvent<HTMLTextAreaElement>,idx:number)=> void
-    text:string;
-}
-
-function NoticeText({
-    text,
-    curIdx,
-    focusRef,
-    openModal,
-    moveNotice,
-    AddNoticeImg,
-    computeOptionXY,
-    noticeTextHandler,
-    noticeKeyboardHandler,
-    }:NoticeTextProps){
-
-    const setHeightRef = useRef<HTMLTextAreaElement|null>(null) 
-    const getHeighRef = useRef<HTMLDivElement|null>(null)
-    const getOptionHW = useRef<HTMLSpanElement|null>(null)
-
-    function OptionHW(e: React.MouseEvent<HTMLSpanElement>) {
-        console.log(e.clientX,e.clientY)
-        computeOptionXY(e.clientX,e.clientY)
-        openModal()
-       
-    }
-
-    const [,drag] = useDrag({
-        type:'NOTICE',
-        item:{text:text,curIdx:curIdx}
-    })
-
-    const [,drop] = useDrop({
-        accept:'NOTICE',
-        drop(draggingItem:{text:string,curIdx:number}) {
-            moveNotice(draggingItem.curIdx,curIdx)
-        },
-    })
-
-    const [,dropFile] = useDrop({
-        accept:[NativeTypes.FILE],
-        drop(file: { files: FileList }) {
-            AddNoticeImg(file,curIdx)
-        },
-    })
-
-    drag(drop(dropFile(setHeightRef)))
-
-    const computeHeight = () =>{
-        const getHeight = getHeighRef.current?.clientHeight as number
-        if (setHeightRef.current) {
-            setHeightRef.current.style.height = `${getHeight}px`;
-        }   
-    }
-
-    const combinedRef = useCallback(
-        (el: HTMLTextAreaElement | null) => {
-            setHeightRef.current = el;
-            if(focusRef !== null)
-                focusRef[curIdx] = el
-        },
-        [setHeightRef, focusRef, curIdx]
-    )
-
-    useEffect(()=>{
-        computeHeight()
-    },[text])
-    
-    return (
-        <>  
-            <div className='frame-textItem'>
-                <textarea 
-                    ref={combinedRef} 
-                    className='notice-item'
-                    placeholder='텍스트 입력'
-                    value={text}
-                    onChange={e=>{
-                        noticeTextHandler(e,curIdx)                   
-                    }}
-                    onKeyDown={e=>{
-                        noticeKeyboardHandler(e,curIdx)
-                    }}
-                />
-                <div className='pd-1'>
-                    <div className='pt-1'>
-                    <span 
-                        ref={getOptionHW} 
-                        className="item-option w-6 h-6 material-symbols-outlined cursor-pointer rounded-full flex items-center justify-center select-none"
-                        onClick={OptionHW}
-                        >
-                        more_horiz
-                    </span>
-                    
-                    </div>
-                </div>
-            </div>
-            
-
-            <div 
-                ref={getHeighRef} 
-                className='notice-title-div bg-slate-500'
-            >{text}</div>
-        </>
-    )
-}
-
-interface NoticeImgProps extends NoticeProps{
-    curFile:File
-}
-
-function NoticeImg({
-    curFile,
-    curIdx,
-    focusRef,
-    moveNotice
-    }:NoticeImgProps){
-
-    const [,drag] = useDrag({
-        type:'NOTICE',
-        item:{curIdx:curIdx}
-    })
-    const [,drop] = useDrop({
-        accept:'NOTICE',
-        drop(draggingItem:{curIdx:number}) {
-            moveNotice(draggingItem.curIdx,curIdx)
-        },
-    })
-
-    const imgRef = useRef<HTMLImageElement>(null)
-
-    drag(drop(imgRef))
-
-    useEffect(()=>{
-        if(focusRef !== null)
-            focusRef[curIdx] = null
-    },[])
-
-    return (
-        <div style={{width:'100%'}}>
-        <img 
-            ref={imgRef}
-            key={curIdx} 
-            src={URL.createObjectURL(curFile)} 
-            width='10px' 
-            height='10px'
-            />
-        <div className="bg-slate-50 h-5" ref={null}></div>
         </div>
     )
 }

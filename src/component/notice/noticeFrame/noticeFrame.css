@@ -52,30 +52,65 @@
     background-color: transparent;
     outline: none;
 }
-.item-option:hover{
-    background-color: rgba(255, 255, 255, 0.26);
-}
-.optionbutton{
-    width: 9rem;
-    padding: 0.5rem;
-    height: 2rem;
-    background-color: #363636;
+.frame-item-option{
+    height: 58px;
     display: flex;
-    flex-direction: row;
-    justify-content: space-between;
     align-items: center;
-    box-shadow: 6px 4px 30px rgba(255, 255, 255, 0.062);
+    justify-items: center;
+    margin-left: 1rem;
+}
+.frame-img-option{
+    height: 58px;
+    display: flex;
+    align-items: flex-start;
+    /* justify-items: flex-start; */
+    margin-left: 1rem;
+}
+.item-option{
+    font-size: 2rem;
+}
+.item-option:hover{
+    background-color: rgba(145, 145, 145, 0.26);
+    cursor: pointer;
+    border-radius: 100%;
+    display: flex;
+    justify-self: center;
+    align-items: center;
+    user-select: none;
+}
+
+.optionbutton{
+    width: 8rem;
+    height: 3.6rem;
+    /* background-color: #363636; */
+    box-shadow: 5px 5px 20px rgba(158, 158, 158, 0.103);
     border-radius: 6px;
     user-select: none;
     color: #cecece;
     position: absolute;
     font-size: 0.9rem;
     cursor: pointer;
-}
-.optionbutton:hover{
-    background-color: #464646;
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+    overflow: hidden;
 }
 
+.optionbutton-item{
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.8rem;
+
+}
+
+.optionbutton-item:nth-child(1){
+    border-bottom:1px solid rgb(131, 131, 131);
+}.optionbutton-item:hover{
+    background-color: #cccccc62;
+}
 .trash{
     font-size:1.4rem;
     font-weight: lighter;

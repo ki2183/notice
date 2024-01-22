@@ -28,14 +28,13 @@ useEffect(()=>{
     gsap.to(navControlerRef.current,{
         duration:0.3,
         ease:"power1.Out",
-        borderRight:  !navControler ? `0px solid gray` : `2px solid gray`
+        borderRight:  !navControler ? `0px solid gray` : `1px solid gray`
     })
 },[navControler])
 
 function SideNavControlor(){
     setNavControler(!navControler)
 }
-
 
 return (
         <div style={{ height:'100vh', display:"grid", gridTemplateRows: "4rem auto"}}>

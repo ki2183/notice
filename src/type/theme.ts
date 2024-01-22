@@ -1,5 +1,5 @@
 export const lightTheme:Theme = {
-    body: '#fcfcfc',
+    body: '#ebebeb',
     text: '#363537',
     toggleBackground: '#fcfcfc',
     mainColor: '#e6328d',
@@ -25,5 +25,5 @@ export const lightTheme:Theme = {
     mainColor: string,
     navBar: string,
     border:string,
-    span:string
+    span:string,
   }
