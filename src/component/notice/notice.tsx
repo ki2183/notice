@@ -8,7 +8,13 @@ export default function Notice(){
         <div className="container-notice">
             <DndProvider backend={HTML5Backend}>
                 <NoticeFrame/>
+                {/* <SideOptionBar/> */}
             </DndProvider>
-        </div>
+        </div> 
     )
+}
+
+function SideOptionBar(){
+    return <div className='frame-sideOptionBar'>
+    </div>
 }

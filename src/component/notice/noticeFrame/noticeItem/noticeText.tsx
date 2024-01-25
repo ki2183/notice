@@ -4,10 +4,14 @@ import { NativeTypes } from "react-dnd-html5-backend";
 import { NoticeProps } from "../noticeFrame";
 
 interface NoticeTextProps extends NoticeProps{
-    AddNoticeImg:(file: { files: FileList },idx:number)=>void
+    AddNoticeImg:(url:string,name:string,idx:number)=>void
     noticeTextHandler: (e:ChangeEvent<HTMLTextAreaElement>,idx:number)=>void;
     noticeKeyboardHandler : (e:React.KeyboardEvent<HTMLTextAreaElement>,idx:number)=> void
     text:string;
+}
+
+type dropImgType = {
+    files:FileList
 }
 
 export default function NoticeText({
@@ -48,7 +52,17 @@ export default function NoticeText({
     const [,dropFile] = useDrop({
         accept:[NativeTypes.FILE],
         drop(file: { files: FileList }) {
-            AddNoticeImg(file,curIdx)
+            console.log(file.files[0])
+            const img = file.files[0]
+            if(img && img.type.startsWith('image/')){
+                const url = URL.createObjectURL(img)
+                const name = img.name
+                AddNoticeImg(url,name,curIdx)
+            }else{
+                alert("이미지 파일이 아닙니다.")
+                console.log('This not imageFile!')
+            }
+            
         },
     })
 

@@ -7,6 +7,7 @@ import NoticeImg from './noticeItem/noticeImg'
 import NoticeModal from './noticeItem/noticeModal'
 import { useAppDispatch, useAppSelector } from '../../../redux/hook'
 import { useNavigate } from 'react-router-dom'
+import { addNoticeArr } from '../../../redux/Slice/noticeSlice'
 
 export type NoticeProps = {
     curIdx : number;
@@ -23,6 +24,7 @@ export default function NoticeFrame(){
     const focusRef = useRef<Array<HTMLTextAreaElement|null>>([])
     const [optionXY,setOptionXY] = useState<{x:number,y:number,idx:number}>({x:0,y:0,idx:0})
     const dispatch = useAppDispatch();
+    const notice = useAppSelector(state => state.notice)
     const navigate = useNavigate()
     
 
@@ -132,20 +134,16 @@ export default function NoticeFrame(){
         setNoticeInfo(prevNoticeInfo)
     } //드래그 핸들러
     
-    function AddNoticeImg(file: {files: FileList},idx:number){
-        console.log(file.files)
-        const img = file.files[0]
+    function AddNoticeImg(url:string,name:string,idx:number){
         const prevNoticeInfo = [...noticeInfo]
-
-        if (img && img.type.startsWith('image/')) {
-            if(noticeInfo.length-1 === idx){
-                prevNoticeInfo.push({img:img})
-                prevNoticeInfo.push({text:""})        
-            }else{
-                prevNoticeInfo.splice(idx,0,{img:img})
-            }
-            setNoticeInfo(prevNoticeInfo)
+        if(noticeInfo.length-1 === idx){ //끝에 img추가하면 text한줄 추가
+            prevNoticeInfo.push({url:url,name:name})
+            prevNoticeInfo.push({text:""}) 
+        }else{
+            prevNoticeInfo.splice(idx,0,{url:url,name:name})
         }
+        setNoticeInfo(prevNoticeInfo)
+        
     } // 이미지 추가
 
     function computeOptionXY(x:number,y:number,idx:number){
@@ -195,7 +193,7 @@ export default function NoticeFrame(){
                 {noticeInfo.map((item,idx)=>{
 
                     const textItem = (item as noticeTypeTEXT).text
-                    const imgItem = (item as noticeTypeIMG).img
+                    const imgItem = (item as noticeTypeIMG)
 
                     return textItem !== undefined ?(
                         <NoticeText 
@@ -220,9 +218,46 @@ export default function NoticeFrame(){
                         computeOptionXY={computeOptionXY}
                     />
                 })}
+                <button onClick={e=>{
+                    console.log(notice)
+                }}>확인</button>
+                <button onClick={e=>{
+                    dispatch(addNoticeArr({
+                        title:'',
+                       arrNotice:noticeInfo 
+                    }))
+                }}>체크</button>
                 
             </div>
+           
             <div className='null-notice-bottom'/>
         </div>
     )
 }
+
+
+// function SideOption(){
+
+//     const [x,setX] = useState<number>(0)
+//     const [y,setY] = useState<number>(0)
+
+
+//     useEffect(()=>{
+//         const optionX = document.querySelector(".frame-sideOptionBar")
+//         const optionY = document.querySelector(".container-Noticepage")
+//         if(optionX){
+//             setX(optionX.getBoundingClientRect().x)
+//         }
+//         if(optionY){
+//             setY(optionY.scrol)
+//         }
+//     },[])
+
+//     useEffect(()=>{console.log(y)},[y])
+
+//     return(
+//         <div>
+
+//         </div>
+//     )
+// }

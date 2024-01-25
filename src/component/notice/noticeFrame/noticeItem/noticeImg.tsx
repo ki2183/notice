@@ -1,9 +1,10 @@
 import { useEffect, useRef } from "react"
 import { NoticeProps } from "../noticeFrame"
 import { useDrag, useDrop } from "react-dnd"
+import { noticeTypeIMG } from "../../noticeType"
 
 interface NoticeImgProps extends NoticeProps{
-    curFile:File
+    curFile:noticeTypeIMG
 }
 
 export default function NoticeImg({
@@ -49,7 +50,8 @@ export default function NoticeImg({
         <img 
             ref={imgRef}
             key={curIdx} 
-            src={URL.createObjectURL(curFile)} 
+            src={curFile.url} 
+            alt={curFile.name}
             width='10px' 
             height='10px'
             />

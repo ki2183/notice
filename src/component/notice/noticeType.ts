@@ -4,8 +4,12 @@ export type arrNotice = Array<noticeTypeTEXT | noticeTypeIMG>
 export type noticeTypeTEXT = {
     text:string
 }
+// export type noticeTypeIMG = {
+//     img:File
+// }
 export type noticeTypeIMG = {
-    img:File
+    name:string
+    url:string
 }
 
 export const initialText = {
