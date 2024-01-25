@@ -1,10 +1,12 @@
 import { configureStore } from "@reduxjs/toolkit";
 import themeSlice from "./Slice/modeSlice";
 import noticeSlice from "./Slice/noticeSlice";
+import scrollSlice from "./Slice/scrollRefSlice"
 export const store = configureStore({
     reducer:{
         theme:themeSlice,
-        notice:noticeSlice
+        notice:noticeSlice,
+        scroll:scrollSlice
     }
 })
 

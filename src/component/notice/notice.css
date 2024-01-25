@@ -4,9 +4,4 @@
     display: flex;
     justify-content: center;
     flex-direction: row;
-}.frame-sideOptionBar{
-    width: 50px;
-    height: auto;
-    background-color: black;
-    margin-left:5rem;
 }

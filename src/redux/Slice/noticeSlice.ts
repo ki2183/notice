@@ -10,10 +10,6 @@ type NoticeDto = {
 
 type Notice = Array<NoticeDto>
 
-
-
-
-
 const initialState:Notice = []
 
 export const noticeSlice = createSlice({
