@@ -9,8 +9,7 @@ import { useAppDispatch, useAppSelector } from '../../../redux/hook'
 import { useNavigate } from 'react-router-dom'
 import { addNoticeArr } from '../../../redux/Slice/noticeSlice'
 import gsap from 'gsap'
-import ReactModal from 'react-modal'
-import SaveModal from './noticeItem/noticeSaveModal'
+import { getCurrentDate } from '../getDate'
 
 export type NoticeProps = {
     curIdx : number;
@@ -37,13 +36,17 @@ export default function NoticeFrame(){
         setTitle(e.target.value)
     }
 
-    function noticeTextHandler(e:ChangeEvent<HTMLTextAreaElement>,idx:number){
-        const inputValue = e.target.value
-        const prevNoticeInfo = [...noticeInfo]
-        const curText = prevNoticeInfo[idx] as noticeTypeTEXT
-        curText.text = inputValue
-        setNoticeInfo(prevNoticeInfo)
-    } // 입력저장
+    function noticeTextHandler(e: ChangeEvent<HTMLTextAreaElement>, idx: number) {
+        const inputValue = e.target.value;
+        setNoticeInfo(prevNoticeInfo => {
+            return prevNoticeInfo.map((item, i) => {
+                if (i === idx && 'text' in item) {
+                    return { ...item, text: inputValue };
+                }
+                return item;
+            });
+        });
+    }
 
     function noticeKeyboardHandler(e:React.KeyboardEvent<HTMLTextAreaElement>,idx:number){
 
@@ -192,7 +195,7 @@ export default function NoticeFrame(){
                 info:"저장하기",
                 spanIcon:"save",
                 onclick: ()=>{
-                    dispatch(addNoticeArr({title:title,arrNotice:noticeInfo}))
+                    dispatch(addNoticeArr({title:title,arrNotice:noticeInfo,creationDate:getCurrentDate(),}))
                     navigate('/')
                 }
             }

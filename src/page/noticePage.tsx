@@ -74,6 +74,7 @@ return (
                     <Notice/>
                 </div>
             </div>
+            
         </div>
     )
 }

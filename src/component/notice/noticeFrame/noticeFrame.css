@@ -47,10 +47,11 @@
 }
 .notice-title{
     height: 5rem;
-    font-size: 2rem;
+    font-size: 1.8rem;
     letter-spacing:normal;
     background-color: transparent;
     outline: none;
+    width: 120%;
 }
 .frame-item-option{
     height: 58px;
@@ -63,7 +64,6 @@
     height: 58px;
     display: flex;
     align-items: flex-start;
-    /* justify-items: flex-start; */
     margin-left: 1rem;
 }
 .item-option{
@@ -97,7 +97,7 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-    height: 1.6rem;
+    height: 1.7rem;
     justify-content: space-between;
     font-size: 0.8rem;
     border-bottom:1px solid rgb(131, 131, 131);

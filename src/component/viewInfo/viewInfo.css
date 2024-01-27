@@ -55,15 +55,26 @@
     background-color: transparent; 
 }.frame-notice-info{
     width: 100%;
-    height: 5rem;
-    background-color: black;
+    height: 6rem;
     margin-bottom: 1rem;
     display: grid;
     grid-template-columns: auto 4rem;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: all 0.3s;
+}.frame-notice-info:hover{
+    box-shadow: 6px 6px 30px #7575753b;
+}.box-notice-info{
+    display: grid;
+    grid-template-rows: auto 3rem;
 }
-.frame-notice-info>div:nth-child(1){
-    background-color: aliceblue;
-}
-.frame-notice-info>div:nth-child(2){
-background-color: beige;
+.main-contents-option{
+    font-size: 2rem;
+    border-radius: 100%;
+    width: 2rem;
+    height: 2rem;
+    margin-right:0.3rem;
+    margin-top:0.1rem;
+}.main-contents-option:hover{
+    background-color: rgba(128, 128, 128, 0.438);
 }

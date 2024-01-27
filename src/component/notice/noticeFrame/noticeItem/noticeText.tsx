@@ -10,10 +10,6 @@ interface NoticeTextProps extends NoticeProps{
     text:string;
 }
 
-type dropImgType = {
-    files:FileList
-}
-
 export default function NoticeText({
     text,
     curIdx,
@@ -105,13 +101,13 @@ export default function NoticeText({
                 />
                 <div className='pd-1'>
                     <div className='pt-1 frame-item-option'>
-                    <span 
-                        ref={getOptionHW} 
-                        className="item-option material-symbols-outlined select-none"
-                        onClick={OptionHW}
-                        >
-                        more_horiz
-                    </span>
+                        <span 
+                            ref={getOptionHW} 
+                            className="item-option material-symbols-outlined select-none"
+                            onClick={OptionHW}
+                            >
+                            more_horiz
+                        </span>
                     
                     </div>
                 </div>

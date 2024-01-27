@@ -7,6 +7,7 @@ import { MainPage } from './page/mainPage';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { NoticePage } from './page/noticePage';
+import { ViewPage } from './page/viewPage';
 
 
 function App() {
@@ -22,6 +23,7 @@ function App() {
       <Routes>
         <Route path='/' element={<MainPage/>}/>
         <Route path='/notice' element={<NoticePage/>}/>
+        <Route path='/view' element={<ViewPage/>}/>
       </Routes>
     </div>
   );
