@@ -21,7 +21,7 @@ export default function NoticeText({
     openModal,
     moveNotice,
     AddNoticeImg,
-    computeOptionXY,
+    getOptionXY,
     noticeTextHandler,
     noticeKeyboardHandler,
     }:NoticeTextProps){
@@ -32,7 +32,7 @@ export default function NoticeText({
 
     function OptionHW(e: React.MouseEvent<HTMLSpanElement>) {
         console.log(e.clientX,e.clientY)
-        computeOptionXY(e.clientX,e.clientY,curIdx)
+        getOptionXY(e.clientX,e.clientY,curIdx)
         openModal()
        
     }
@@ -107,7 +107,7 @@ export default function NoticeText({
                     <div className='pt-1 frame-item-option'>
                     <span 
                         ref={getOptionHW} 
-                        className="item-option material-symbols-outlined"
+                        className="item-option material-symbols-outlined select-none"
                         onClick={OptionHW}
                         >
                         more_horiz

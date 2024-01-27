@@ -2,13 +2,15 @@ import { useEffect, useRef, useState } from "react";
 import { Nav } from "../component/nav/nav";
 import gsap from "gsap";
 import SideNavOl from "../component/nav/sideNavOl/sideNavOl";
-import ViewInfo from "../component/nav/viewInfo/viewInfo";
+import ViewInfo from "../component/viewInfo/viewInfo";
+import { useAppSelector } from "../redux/hook";
 
 export function MainPage(){
     
 const widthRef = useRef<HTMLDivElement>(null)
 const navControlerRef = useRef<HTMLDivElement>(null)
 const [navControler,setNavControler] = useState(false)
+const info = useAppSelector(state=>state.notice)
 
 useEffect(()=>{
     gsap.set(widthRef.current ,{

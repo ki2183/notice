@@ -4,31 +4,39 @@ import './noticeFrame.css'
 import { arrNotice,noticeTypeIMG,noticeTypeTEXT,initialText } from '../noticeType'
 import NoticeText from './noticeItem/noticeText'
 import NoticeImg from './noticeItem/noticeImg'
-import NoticeModal from './noticeItem/noticeModal'
+import NoticeModal, { ModalItem } from './noticeItem/noticeModal'
 import { useAppDispatch, useAppSelector } from '../../../redux/hook'
 import { useNavigate } from 'react-router-dom'
 import { addNoticeArr } from '../../../redux/Slice/noticeSlice'
 import gsap from 'gsap'
 import ReactModal from 'react-modal'
+import SaveModal from './noticeItem/noticeSaveModal'
 
 export type NoticeProps = {
     curIdx : number;
     focusRef:Array<HTMLTextAreaElement|null>;
     moveNotice:(dragIdx:number, dropIdx:number)=>void
-    computeOptionXY:(x:number,y:number,idx:number) => void
+    getOptionXY:(x:number,y:number,idx:number) => void
     openModal:()=> void
 }
 
 export default function NoticeFrame(){
 
     const [noticeInfo,setNoticeInfo] = useState<arrNotice>([initialText])
+    const [title,setTitle] = useState<string>("")
     const [modalIsOpen, setModalIsOpen] = useState(false);
-    const [saveModalIsOpen, setSaveModalIsOpen] = useState(false);
     const focusRef = useRef<Array<HTMLTextAreaElement|null>>([])
     const [optionXY,setOptionXY] = useState<{x:number,y:number,idx:number}>({x:0,y:0,idx:0})
-    const [saveXY,setSaveXY] = useState<{x:number,y:number}>({x:0,y:0})
-    
+    const modalRef = useRef<Array<ModalItem>>([])
+    const dispatch = useAppDispatch()
+    const navigate = useNavigate()
+
     // #region
+
+    function titleChangeHandler(e:React.ChangeEvent<HTMLInputElement>){
+        setTitle(e.target.value)
+    }
+
     function noticeTextHandler(e:ChangeEvent<HTMLTextAreaElement>,idx:number){
         const inputValue = e.target.value
         const prevNoticeInfo = [...noticeInfo]
@@ -147,9 +155,7 @@ export default function NoticeFrame(){
         
     } // 이미지 추가
 
-    function computeOptionXY(x:number,y:number,idx:number){
-        setOptionXY({x:x,y:y,idx:idx})
-    } //옵션 위치 계산
+     //옵션 위치 계산
     // #endregion
     /* Modal */
     // #region
@@ -162,7 +168,6 @@ export default function NoticeFrame(){
     }
     function addNotice(idx:number){
         const prevNoticeInfo = [...noticeInfo]
-
         prevNoticeInfo.splice(idx+1,0,{text:''})
         setNoticeInfo(prevNoticeInfo) 
     }
@@ -174,85 +179,55 @@ export default function NoticeFrame(){
     const closeModal = () => {
         setModalIsOpen(false);
     };
-    const openSaveModal = () => {
-        setSaveModalIsOpen(true);
-    };
-
-    const closeSaveModal = () => {
-        setSaveModalIsOpen(false);
-    };
-
 
     // #endregion
 
     // saveButton
     // #region
 
-    const customStyles = {
-        overlay: {
-          backgroundColor: 'transparent', // 배경색 및 투명도 조절
-        },
-        content: {
-          width: '100vw', 
-          height: '100vh', 
-          backgroundColor: 'transparent',
-          left:0,
-          top:0,
-          overflow:'hidden',
-          border:'none'
-        },
-      };
     function getSaveButtonXY(x:number,y:number){
-        setSaveXY({x:x,y:y})
+        setOptionXY({x:x,y:y,idx:0})
+        modalRef.current = [
+            {    
+                info:"저장하기",
+                spanIcon:"save",
+                onclick: ()=>{
+                    dispatch(addNoticeArr({title:title,arrNotice:noticeInfo}))
+                    navigate('/')
+                }
+            }
+        ]
+    }
+    function getOptionXY(x:number,y:number,idx:number){
+        setOptionXY({x:x,y:y,idx:idx})
+        modalRef.current = [
+            {    
+                info:"삭제하기",
+                spanIcon:"delete",
+                onclick: ()=>delNotice(idx)
+            },
+            {    
+                info:"추가하기",
+                spanIcon:"add",
+                onclick: ()=>addNotice(idx)
+            }
+        ]
     }
     // #endregion
-
-    useEffect(()=>{console.log(saveXY)},[saveXY])
 
     return (
         <div className='flex flex-col items-center justify-center'>
             <NoticeModal
                 optionXY={optionXY}
-                delNotice={delNotice}
-                addNotice={addNotice}
+                modalItemArr={modalRef.current}
                 modalIsOpen={modalIsOpen}
                 closeModal={closeModal}
             />
 
-            <ReactModal
-        isOpen={saveModalIsOpen}
-        onRequestClose={closeSaveModal}
-        style={customStyles}
-      >
-        <div className='w-screen h-screen bg-transparent left-0 top-0 absolute 'onClick={closeSaveModal}/>
-        <div 
-            className='bg-slate-100 w-5 h-5' 
-            style={{
-                left:`${saveXY.x+2}px`,
-                top:`${saveXY.x+2}px`, 
-            }}
-
-            >
-                <div className='optionbutton-item' onClick={e=>{delNotice(optionXY.idx); closeModal()}}>
-                    <span>삭제하기</span>
-                    <span className="material-symbols-outlined select-none trash">
-                            delete
-                        </span>
-                </div>
-                <div className='optionbutton-item' onClick={e=>{addNotice(optionXY.idx); closeModal()}}>
-                    <span>추가하기</span>
-                    <span className="material-symbols-outlined select-none trash">
-                            add
-                        </span>
-                </div>
-                
-            </div>
-      </ReactModal>
-
             <div className='null-notice'/>
-            <NoticeSaveButton openSaveModal={openSaveModal} getSaveButtonXY={getSaveButtonXY}/>
+            <NoticeSaveButton getSaveButtonXY={getSaveButtonXY} openModal={openModal}/>
             <div className="frame-notice">
-                <input type='text' className='notice-title' placeholder='제목 입력'/>
+                <input type='text' className='notice-title' placeholder='제목 입력' onChange={titleChangeHandler}/>
                 {noticeInfo.map((item,idx)=>{
 
                     const textItem = (item as noticeTypeTEXT).text
@@ -268,7 +243,7 @@ export default function NoticeFrame(){
                             moveNotice={moveNotice}
                             AddNoticeImg={AddNoticeImg}
                             noticeTextHandler={noticeTextHandler}
-                            computeOptionXY={computeOptionXY}
+                            getOptionXY={getOptionXY}
                             noticeKeyboardHandler={noticeKeyboardHandler}
                         />
                     ):<NoticeImg
@@ -278,18 +253,9 @@ export default function NoticeFrame(){
                         openModal={openModal}
                         focusRef={focusRef.current}
                         moveNotice={moveNotice}
-                        computeOptionXY={computeOptionXY}
+                        getOptionXY={getOptionXY}
                     />
                 })}
-                {/* <button onClick={e=>{
-                    console.log(notice)
-                }}>확인</button>
-                <button onClick={e=>{
-                    dispatch(addNoticeArr({
-                        title:'',
-                       arrNotice:noticeInfo 
-                    }))
-                }}>체크</button> */}
                 
             </div>
            
@@ -300,10 +266,10 @@ export default function NoticeFrame(){
 
 type SaveButtonProp = {
     getSaveButtonXY:(x:number,y:number)=>void
-    openSaveModal:()=>void
+    openModal:()=>void
 }
 
-function NoticeSaveButton({getSaveButtonXY,openSaveModal}:SaveButtonProp){
+function NoticeSaveButton({getSaveButtonXY,openModal}:SaveButtonProp){
 
     const scrollHeight = useAppSelector(state => state.scroll)
     const scrollRef = useRef<HTMLDivElement>(null)
@@ -311,7 +277,7 @@ function NoticeSaveButton({getSaveButtonXY,openSaveModal}:SaveButtonProp){
     function OptionXY(e: React.MouseEvent<HTMLSpanElement>) {
         console.log(e.clientX,e.clientY)
         getSaveButtonXY(e.clientX,e.clientY) 
-        openSaveModal()     
+        openModal()
     }
 
     useEffect(()=>{
@@ -321,6 +287,7 @@ function NoticeSaveButton({getSaveButtonXY,openSaveModal}:SaveButtonProp){
             ease:'power1.inOut'
         })
     },[scrollHeight])
+
     return (
         <div className='frame-noticeSaveButton' ref={scrollRef} style={{marginTop:"184px"}}>
                 <span onClick={OptionXY} className="material-symbols-outlined cursor-pointer saveButton">

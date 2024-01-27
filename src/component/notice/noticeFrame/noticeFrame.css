@@ -81,8 +81,6 @@
 
 .optionbutton{
     width: 8rem;
-    height: 3.6rem;
-    /* background-color: #363636; */
     box-shadow: 5px 5px 20px rgba(158, 158, 158, 0.103);
     border-radius: 6px;
     user-select: none;
@@ -90,8 +88,6 @@
     position: absolute;
     font-size: 0.9rem;
     cursor: pointer;
-    display: grid;
-    grid-template-rows: 1fr 1fr;
     overflow: hidden;
 }
 
@@ -101,14 +97,16 @@
     display: flex;
     flex-direction: row;
     align-items: center;
+    height: 1.6rem;
     justify-content: space-between;
     font-size: 0.8rem;
-
+    border-bottom:1px solid rgb(131, 131, 131);
 }
 
-.optionbutton-item:nth-child(1){
-    border-bottom:1px solid rgb(131, 131, 131);
-}.optionbutton-item:hover{
+.optionbutton-item:last-child{
+    border-bottom:none
+}
+.optionbutton-item:hover{
     background-color: #cccccc62;
 }
 .trash{

@@ -2,18 +2,28 @@ import ReactModal from "react-modal";
 import { useAppSelector } from "../../../../redux/hook";
 import { useEffect } from "react";
 
-type NoticeModalProps={
-    optionXY:{x:number,y:number,idx:number};
-    delNotice:(idx:number)=>void;
-    addNotice:(idx:number)=>void;
+export type ModalItem = {
+  info:string;
+  spanIcon:string;
+  onclick:()=> void;
+}
+
+export type NoticeModalProps={
+    optionXY:{x:number,y:number,idx?:number};
+    modalItemArr:Array<ModalItem>
     modalIsOpen:boolean;
     closeModal:()=> void;
-
 }
 
 ReactModal.setAppElement('#root');
 
-export default function NoticeModal({addNotice,delNotice,closeModal,modalIsOpen,optionXY}:NoticeModalProps){
+export default function NoticeModal({
+  modalIsOpen,
+  closeModal,
+  optionXY,
+  modalItemArr,
+  
+}:NoticeModalProps){
     const theme = useAppSelector(state => state.theme.theme.span)
     useEffect(()=>{
         console.log(theme)
@@ -47,23 +57,17 @@ export default function NoticeModal({addNotice,delNotice,closeModal,modalIsOpen,
                 top:`${optionXY.y+2}px`, 
                 color: theme === "light_mode"? '#dbdbdb':'#383838', 
                 background:theme !== "light_mode"? 'linear-gradient(161deg, rgb(223 223 223), rgb(186 186 186))':'linear-gradient(161deg, rgb(81, 81, 81),rgb(51 51 51))'
-            }}
-            // linear-gradient(141deg, rgb(51 51 51), rgb(81, 81, 81));
-
-            >
-                <div className='optionbutton-item' onClick={e=>{delNotice(optionXY.idx); closeModal()}}>
-                    <span>삭제하기</span>
+            }}>
+              {
+                modalItemArr.map((item,idx)=>(
+                  <div key={idx} className='optionbutton-item' onClick={e=>{item.onclick(); closeModal()}}>
+                    <span>{item.info}</span>
                     <span className="material-symbols-outlined select-none trash">
-                            delete
+                            {item.spanIcon}
                         </span>
-                </div>
-                <div className='optionbutton-item' onClick={e=>{addNotice(optionXY.idx); closeModal()}}>
-                    <span>추가하기</span>
-                    <span className="material-symbols-outlined select-none trash">
-                            add
-                        </span>
-                </div>
-                
+                  </div>
+                ))
+              }           
             </div>
       </ReactModal>
     )

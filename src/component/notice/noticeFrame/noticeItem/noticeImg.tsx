@@ -13,14 +13,14 @@ export default function NoticeImg({
     focusRef,
     openModal,
     moveNotice,
-    computeOptionXY
+    getOptionXY
     }:NoticeImgProps){
 
     const getOptionHW = useRef<HTMLSpanElement|null>(null)
 
     function OptionHW(e: React.MouseEvent<HTMLSpanElement>) {
         console.log(e.clientX,e.clientY)
-        computeOptionXY(e.clientX,e.clientY,curIdx)
+        getOptionXY(e.clientX,e.clientY,curIdx)
         openModal()
        
     }
