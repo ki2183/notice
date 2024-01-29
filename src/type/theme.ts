@@ -5,7 +5,9 @@ export const lightTheme:Theme = {
     mainColor: '#e6328d',
     navBar: '#fcfcfc',
     border:'#999999',
-    span:'dark_mode'
+    span:'dark_mode',
+    lightText:"#9d9d9d",
+    modal:"linear-gradient(161deg, rgb(223 223 223), rgb(186 186 186))"
   };
   
   export const darkTheme:Theme = {
@@ -15,7 +17,9 @@ export const lightTheme:Theme = {
     mainColor: '#fcfcfc',
     navBar: '#303030',
     border:'#999999',
-    span:'light_mode'
+    span:'light_mode',
+    lightText:"#6d6d6d",
+    modal:'linear-gradient(161deg, rgb(81, 81, 81),rgb(51 51 51))'
   };
   
   export type Theme = {
@@ -26,4 +30,6 @@ export const lightTheme:Theme = {
     navBar: string,
     border:string,
     span:string,
+    lightText:string, 
+    modal:string,
   }

@@ -2,8 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import './viewInfo.css'
 import { useAppDispatch, useAppSelector } from '../../redux/hook';
 import NoticeModal from '../notice/noticeFrame/noticeItem/noticeModal';
-import { removeNoticeArr } from '../../redux/Slice/noticeSlice';
-import { getCurrentDate } from '../notice/getDate';
+import { Notice, NoticeDto, removeNoticeArr } from '../../redux/Slice/noticeSlice';
 import { useNavigate } from 'react-router-dom';
 
 export type ModalItem = {
@@ -23,6 +22,9 @@ export default function ViewInfo(){
 
     const [modalIsOpen,setModalIsOpen] = useState<boolean>(false)
     const [optionXY,setOptionXY] = useState<{x:number,y:number,idx:number}>({x:0,y:0,idx:0})
+    const [page,setPage] = useState<NoticeDto[][]>([])
+    const [pageNum,setPageNum] = useState<number>(1)
+    const contentNum = 6 //보여주는 컨텐츠 개수
     const modalRef = useRef<Array<ModalItem>>([
         {
             info:"삭제하기",
@@ -33,8 +35,11 @@ export default function ViewInfo(){
         }
     ])
     const noticeInfo = useAppSelector(state => state.notice)
+    const noticeLen = noticeInfo.length
+    const noticeInfo_ =  [...noticeInfo].reverse()
+    const theme = useAppSelector(state => state.theme.theme)
     const dispatch = useAppDispatch()
-
+    
     //modal open close
     // #region
     const closeModal = ()=> {
@@ -47,7 +52,30 @@ export default function ViewInfo(){
 
     useEffect(()=>{
         console.log(noticeInfo)
+        // const arr = []
+        const newArr = Array.from({length:Math.ceil(noticeInfo.length / contentNum)},
+        (v,i)=> noticeInfo_.slice(i*contentNum, i*contentNum +contentNum))
+        setPage(newArr)
+    },[noticeInfo])
+
+    useEffect(()=>{
+        console.log(noticeInfo)
+        // const arr = []
+        const newArr = Array.from({length:Math.ceil(noticeInfo.length / contentNum)},
+        (v,i)=> noticeInfo_.slice(i*contentNum, i*contentNum +contentNum))
+        setPage(newArr)
     },[])
+
+
+    useEffect(()=>{
+        console.log(page)
+    },[page])
+
+    const computeContentsIdx = (idx:number):number=>{  
+        return noticeLen-idx-1-(pageNum-1)*contentNum
+    }
+
+
 
     function optionClick(x:number,y:number,idx:number){
         setOptionXY({x:x,y:y,idx:idx})
@@ -63,24 +91,45 @@ export default function ViewInfo(){
     
     return (
         <div className='viewBox'>
-            {noticeInfo.length === 0 ? null : 
-            noticeInfo.map((item,idx)=>(
+            {/* {noticeInfo.length === 0 ?  */}
+            {page.length === 0 ? 
+            <div style={{color:theme.lightText}} className='w-50 h-70 flex flex-col item items-center gap-5 ml-auto mr-auto text-gray-300'>
+                <span>글이 없읍니다.</span> 
+                <span>좌측 상단 메뉴에서 글쓰기로 글을 써주세요</span>
+            </div> : 
+            page[pageNum-1].map((item,idx)=>(
                 <ViewContents
                     key={idx}
                     creationDate={item.creationDate}
                     title={item.title}
-                    idx={idx}
+                    idx={computeContentsIdx(idx)}
                     optionClick={optionClick}
                 />
             ))
             }
-      
+
             <NoticeModal
                 optionXY={optionXY}
                 modalItemArr={modalRef.current}
                 modalIsOpen={modalIsOpen}
                 closeModal={closeModal}
             />
+    
+            <div style={{width:"500px",marginTop:'1rem'}} className='flex items-center justify-center gap-2'>
+                {page.map((item,idx)=>(
+                    <div 
+                        className='text-sm cursor-pointer pageNum' 
+                        style={{color: idx+1 === pageNum ? theme.text : theme.lightText}} 
+                        key={idx}
+                        onClick={e=>{
+                            setPageNum(idx+1)
+                        }}
+                    >{idx+1}
+                    </div>
+                ))}
+            </div>
+
+            <div className='h-5'></div>
         </div>
     )
 }
@@ -106,15 +155,16 @@ function ViewContents({
     const viewInfo = () =>{
         navigate(`/view?page=${idx}`)
     }
+    const textLightcolor = useAppSelector(state => state.theme.theme.lightText)
 
     return(
-        <div className='frame-notice-info' onClick={viewInfo}>
-        <div className='box-notice-info'>
+        <div className='frame-notice-info'>
+        <div className='box-notice-info' onClick={viewInfo}>
             <div className='text-3xl flex items-center'>
                 <span className='ml-4 mt-2'>{title}</span>
             </div>
-            <div className='text-l flex items-center'>
-                <span className='ml-4'>{creationDate }</span>
+            <div className='text-l flex items-center text-sm'>
+                <span className='ml-4' style={{color:textLightcolor}}>{creationDate}</span>
             </div>
         </div>
         <div className='flex flex-col items-end'>

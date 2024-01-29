@@ -18,10 +18,6 @@ export default function SideNavOl(){
         <li className='container-sideNavLi' onClick={e=>{moveURL('/notice')}}>
             <span className='sideNavSpan'>글쓰기</span>
         </li>
-
-        <li className='container-sideNavLi flex flex-row'> 
-            <span className='sideNavSpan'>Test</span>
-        </li>
       
     </ol>
 }

@@ -115,6 +115,7 @@
 }
 
 .frame-noticeSaveButton{
+    user-select: none;
     position: absolute;
     top:50%;
     right: 10%;
@@ -129,6 +130,8 @@
     align-items: center;
     box-shadow: 2px 2px 36px #6464641c;
     background: linear-gradient(161deg, rgb(66, 66, 66), rgb(75, 75, 75));
+}.frame-noticeSaveButtonSaveVer{
+    display: none;
 }
 .saveButton{
     border-radius: 100%;
@@ -137,4 +140,26 @@
 }
 .saveButton:hover{
     background-color: rgba(124, 124, 124, 0.5);
+}
+
+@media (max-width: 860px) {
+    .frame-noticeSaveButton{
+        display: none
+    }.frame-noticeSaveButtonSaveVer{
+        user-select: none;
+        position: absolute;
+        bottom:10%;
+        right: 10%;
+        width: 100px;
+        height: 40px;
+        position: fixed;
+        padding: 10px;
+        text-align: center;
+        border-radius: 6px;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        box-shadow: 2px 2px 36px #6464641c;
+        background: linear-gradient(161deg, rgb(66, 66, 66), rgb(75, 75, 75));
+    }
 }

@@ -45,7 +45,7 @@ return (
                 <div ref={navControlerRef}>
                     <SideNavOl/>
                 </div>
-                <div className="overflow-x-hidden">
+                <div className="">
                     <ViewInfo/>
                 </div>
             </div>

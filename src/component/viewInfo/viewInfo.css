@@ -78,3 +78,13 @@
 }.main-contents-option:hover{
     background-color: rgba(128, 128, 128, 0.438);
 }
+.pageNum{
+    width: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.pageNum:hover{
+    box-shadow: 2px 2px 26px #666;
+    width: 1rem;
+}

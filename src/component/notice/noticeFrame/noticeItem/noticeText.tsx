@@ -90,7 +90,7 @@ export default function NoticeText({
                 <textarea 
                     ref={combinedRef} 
                     className='notice-item'
-                    placeholder='텍스트 입력'
+                    placeholder='텍스트 입력/이미지 드랍'
                     value={text}
                     onChange={e=>{
                         noticeTextHandler(e,curIdx)                   

@@ -1,8 +1,9 @@
-import { useEffect } from "react";
 import { useAppSelector } from "../../../redux/hook";
 import "./noticeView.css";
 import { noticeTypeIMG, noticeTypeTEXT } from "../../notice/noticeType";
-import { useLocation, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { Notice } from "../../../redux/Slice/noticeSlice";
+import { useEffect } from "react";
 
 function NoticeView(){
 
@@ -14,6 +15,10 @@ function NoticeView(){
 
     return (
         <div className="container-view">
+
+            {noticeInfo.length === 0 ? null : 
+            
+            <>
             <ViewInfo
                 title={noticeInfo[num].title}
                 creationDate={noticeInfo[num].creationDate}
@@ -40,27 +45,14 @@ function NoticeView(){
                 }
                 
             </div>
+            </>
+
+            }
+            
 
             <div className="frame-view-division"/>
 
-            <div className="frame-view-aroundNotice">
-                <div className="next-notice">
-                    <span className="material-symbols-outlined cursor-pointer view-button viewup">
-                        arrow_drop_up
-                    </span>
-                    <span>
-                        다음이야 다음이야 다음이야~~~~
-                    </span>
-                </div>
-                <div className="next-notice">
-                    <span className="material-symbols-outlined cursor-pointer view-button viewdown">
-                        arrow_drop_down
-                    </span>
-                    <span>
-                        이전이야 이전이야 이전이야 ~~~~
-                    </span>
-                </div>
-            </div>
+            <AroundNotice num={num} noticeInfo={noticeInfo}/>
             <div className='null-view'/>
         </div>
     )
@@ -78,6 +70,49 @@ function ViewInfo({title,creationDate}:ViewInfoProp){
             <span>{creationDate}</span>
         </div>
     )
+}
+
+type AroundNoticeProps = {
+    noticeInfo: Notice;
+    num: number;
+}
+
+function AroundNotice({noticeInfo,num}:AroundNoticeProps){ //다음 이전 글
+
+    const navigate = useNavigate()
+    const theme = useAppSelector(state => state.theme.theme)
+
+    return(
+        <div className="frame-view-aroundNotice">
+                {//이 인덱스가 마지막이 아니고 다음것이 있어야함
+                    (num < noticeInfo.length - 1 && noticeInfo[num + 1]) ? 
+                    (<div className="next-notice" onClick={e=>{
+                        navigate(`/view?page=${num + 1}`)
+                    }}>
+                        <span className="material-symbols-outlined cursor-pointer view-button viewup">
+                            arrow_drop_up
+                        </span>
+                        <span style={{color:theme.lightText}}>
+                            {noticeInfo[num + 1].title}
+                        </span>
+                    </div>) : null
+                }
+                {//이 인덱스가 마지막이 아니고 다음것이 있어야함
+                    (num > 0 && noticeInfo[num - 1]) ? 
+                    (<div className="next-notice" onClick={e=>{
+                        navigate(`/view?page=${num-1}`)
+                    }}>
+                        <span className="material-symbols-outlined cursor-pointer view-button viewup">
+                            arrow_drop_down
+                        </span>
+                        <span style={{color:theme.lightText}}>
+                            {noticeInfo[num - 1].title}
+                        </span>
+                    </div>) : null
+                }
+
+        </div>
+        )
 }
  
 export default NoticeView;

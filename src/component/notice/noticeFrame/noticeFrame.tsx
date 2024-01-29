@@ -195,6 +195,10 @@ export default function NoticeFrame(){
                 info:"저장하기",
                 spanIcon:"save",
                 onclick: ()=>{
+                    if(title === ""){
+                        alert('제목이 비어있어요!')
+                        return
+                    }
                     dispatch(addNoticeArr({title:title,arrNotice:noticeInfo,creationDate:getCurrentDate(),}))
                     navigate('/')
                 }
@@ -204,15 +208,15 @@ export default function NoticeFrame(){
     function getOptionXY(x:number,y:number,idx:number){
         setOptionXY({x:x,y:y,idx:idx})
         modalRef.current = [
-            {    
-                info:"삭제하기",
-                spanIcon:"delete",
-                onclick: ()=>delNotice(idx)
-            },
+            
             {    
                 info:"추가하기",
                 spanIcon:"add",
                 onclick: ()=>addNotice(idx)
+            },{    
+                info:"삭제하기",
+                spanIcon:"delete",
+                onclick: ()=>delNotice(idx)
             }
         ]
     }
@@ -229,6 +233,7 @@ export default function NoticeFrame(){
 
             <div className='null-notice'/>
             <NoticeSaveButton getSaveButtonXY={getSaveButtonXY} openModal={openModal}/>
+            <NoticeSaveButtonFixVer getSaveButtonXY={getSaveButtonXY} openModal={openModal}/>
             <div className="frame-notice">
                 <input type='text' className='notice-title' placeholder='제목 입력' onChange={titleChangeHandler}/>
                 {noticeInfo.map((item,idx)=>{
@@ -276,6 +281,7 @@ function NoticeSaveButton({getSaveButtonXY,openModal}:SaveButtonProp){
 
     const scrollHeight = useAppSelector(state => state.scroll)
     const scrollRef = useRef<HTMLDivElement>(null)
+    const modalColor = useAppSelector(state => state.theme.theme.modal)
 
     function OptionXY(e: React.MouseEvent<HTMLSpanElement>) {
         console.log(e.clientX,e.clientY)
@@ -292,7 +298,27 @@ function NoticeSaveButton({getSaveButtonXY,openModal}:SaveButtonProp){
     },[scrollHeight])
 
     return (
-        <div className='frame-noticeSaveButton' ref={scrollRef} style={{marginTop:"184px"}}>
+        <div className='frame-noticeSaveButton' ref={scrollRef} style={{marginTop:"184px",background:modalColor}}>
+                <span onClick={OptionXY} className="material-symbols-outlined cursor-pointer saveButton">
+                save
+                </span>
+        </div>
+    )
+}
+
+
+function NoticeSaveButtonFixVer({getSaveButtonXY,openModal}:SaveButtonProp){
+
+    function OptionXY(e: React.MouseEvent<HTMLSpanElement>) {
+        console.log(e.clientX,e.clientY)
+        getSaveButtonXY(e.clientX,e.clientY) 
+        openModal()
+    }
+
+    const modalColor = useAppSelector(state => state.theme.theme.modal)
+
+    return (
+        <div className='frame-noticeSaveButtonSaveVer' style={{background:modalColor}}>
                 <span onClick={OptionXY} className="material-symbols-outlined cursor-pointer saveButton">
                 save
                 </span>

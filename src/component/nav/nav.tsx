@@ -15,23 +15,15 @@ export function Nav({SideNavControlor}:NavProps){
 
 
     useEffect(()=>{
-        gsap.set(spanRef.current,{
-            rotate: 180
-        })
-    },[])
-    
-
-    const darkmodeHandler = ()=>{
         gsap.to(spanRef.current,{
-            duration:0.2,
+            rotate: theme.span === 'light_mode' ? 180 : 0,
+            duration:0.8,
             ease:"back.out",
-            rotate: theme.span === 'dark_mode' ? 180 : 0
         })
-    }
+    },[theme])
 
     function changetheme(){
         dispatch(changeTheme())
-        darkmodeHandler()
     }
 
     return(
