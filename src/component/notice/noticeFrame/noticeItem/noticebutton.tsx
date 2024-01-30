@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react"
 import { useAppSelector } from "../../../../redux/hook"
-
+import gsap from "gsap"
 type SaveButtonProp = {
     getSaveButtonXY:(x:number,y:number)=>void
     openModal:()=>void
