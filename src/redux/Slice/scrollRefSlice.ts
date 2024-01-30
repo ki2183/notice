@@ -20,3 +20,5 @@ export const scrollSlice = createSlice({
 export const { updateScollRate } = scrollSlice.actions
 export const scrollNotice = (state: RootState) => state.scroll
 export default scrollSlice.reducer
+
+//스크롤량 관리

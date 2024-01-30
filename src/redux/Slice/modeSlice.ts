@@ -23,3 +23,6 @@ export const themeSlice = createSlice({
 export const { changeTheme } = themeSlice.actions
 export const selectTheme = (state: RootState) => state.theme.theme
 export default themeSlice.reducer
+
+
+//다크 라이트 모드 관리
