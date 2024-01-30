@@ -8,8 +8,8 @@ import NoticeModal, { ModalItem } from './noticeItem/noticeModal'
 import { useAppDispatch, useAppSelector } from '../../../redux/hook'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { addNoticeArr, updateNoticeArr } from '../../../redux/Slice/noticeSlice'
-import gsap from 'gsap'
 import { getCurrentDate } from '../getDate'
+import { NoticeSaveButton, NoticeSaveButtonFixVer } from './noticeItem/noticebutton'
 
 export type NoticeProps = {
     curIdx : number;
@@ -21,27 +21,24 @@ export type NoticeProps = {
 
 export default function NoticeFrame(){
 
-    const [noticeInfo,setNoticeInfo] = useState<arrNotice>([initialText])
-    const [title,setTitle] = useState<string>("")
-    const [modalIsOpen, setModalIsOpen] = useState(false);
-    const focusRef = useRef<Array<HTMLTextAreaElement|null>>([])
-    const [optionXY,setOptionXY] = useState<{x:number,y:number,idx:number}>({x:0,y:0,idx:0})
-    const modalRef = useRef<Array<ModalItem>>([])
-    const noticeTotalInfo = useAppSelector(state => state.notice)
+    const [noticeInfo,setNoticeInfo] = useState<arrNotice>([initialText]) //글데이터
+    const [title,setTitle] = useState<string>("") //제목
+    const [modalIsOpen, setModalIsOpen] = useState(false); //모달
+    const focusRef = useRef<Array<HTMLTextAreaElement|null>>([]) //포커싱 Ref
+    const [optionXY,setOptionXY] = useState<{x:number,y:number,idx:number}>({x:0,y:0,idx:0}) //버튼 좌표idx
+    const modalRef = useRef<Array<ModalItem>>([]) //모달에 넣을 함수[]
+    const noticeTotalInfo = useAppSelector(state => state.notice) //update에 필요
     const dispatch = useAppDispatch()
     const navigate = useNavigate()
-    const [updateMode ,setUpdateMode] = useState<boolean>(false)
+    const [updateMode ,setUpdateMode] = useState<boolean>(false) //update로 들어왔으면 true
 
     const location = useLocation()
     const queryParams = new URLSearchParams(location.search)
-    const page = queryParams.get('page')
+    const page = queryParams.get('page') //쿼리 변수
 
     useEffect(()=>{
-        console.log(page)
         if(page !== null && page !== undefined){
             const intPage = parseInt(page)
-            console.log(intPage)
-            console.log(noticeTotalInfo.length)
             if (noticeTotalInfo.length > intPage) {
                 setUpdateMode(true)
                 setNoticeInfo(noticeTotalInfo[intPage].arrNotice)
@@ -51,6 +48,7 @@ export default function NoticeFrame(){
        
     },[])
 
+    /* 키보드 함수 또는 추가 삭제 관리 */
     // #region
 
     function titleChangeHandler(e:React.ChangeEvent<HTMLInputElement>){
@@ -90,7 +88,6 @@ export default function NoticeFrame(){
                 const prevNoticeText = (noticeInfo[idx-1] as noticeTypeTEXT).text
                 const prevNoticeInfo = [...noticeInfo]
          
-                console.log(prevNoticeText === undefined)
                 if(prevNoticeText === undefined && noticeMax === idx){
                     focusRef.current[findTextBack()]?.focus();
                 }else{
@@ -181,7 +178,7 @@ export default function NoticeFrame(){
 
      //옵션 위치 계산
     // #endregion
-    /* Modal */
+    /* 모달 관리 */
     // #region
     function delNotice(idx:number){
         const prevNoticeInfo = [...noticeInfo]
@@ -206,7 +203,7 @@ export default function NoticeFrame(){
 
     // #endregion
 
-    // saveButton
+    /* 저장 관리 */
     // #region
 
     function getSaveButtonXY(x:number,y:number){
@@ -307,60 +304,6 @@ export default function NoticeFrame(){
             </div>
            
             <div className='null-notice-bottom'/>
-        </div>
-    )
-}
-
-type SaveButtonProp = {
-    getSaveButtonXY:(x:number,y:number)=>void
-    openModal:()=>void
-}
-
-function NoticeSaveButton({getSaveButtonXY,openModal}:SaveButtonProp){
-
-    const scrollHeight = useAppSelector(state => state.scroll)
-    const scrollRef = useRef<HTMLDivElement>(null)
-    const modalColor = useAppSelector(state => state.theme.theme.modal)
-
-    function OptionXY(e: React.MouseEvent<HTMLSpanElement>) {
-        console.log(e.clientX,e.clientY)
-        getSaveButtonXY(e.clientX,e.clientY) 
-        openModal()
-    }
-
-    useEffect(()=>{
-        gsap.to(scrollRef.current,{
-            duration:0.2,
-            top:`${scrollHeight.rate*20}%`,
-            ease:'power1.inOut'
-        })
-    },[scrollHeight])
-
-    return (
-        <div className='frame-noticeSaveButton' ref={scrollRef} style={{marginTop:"184px",background:modalColor}}>
-                <span onClick={OptionXY} className="material-symbols-outlined cursor-pointer saveButton">
-                save
-                </span>
-        </div>
-    )
-}
-
-
-function NoticeSaveButtonFixVer({getSaveButtonXY,openModal}:SaveButtonProp){
-
-    function OptionXY(e: React.MouseEvent<HTMLSpanElement>) {
-        console.log(e.clientX,e.clientY)
-        getSaveButtonXY(e.clientX,e.clientY) 
-        openModal()
-    }
-
-    const modalColor = useAppSelector(state => state.theme.theme.modal)
-
-    return (
-        <div className='frame-noticeSaveButtonSaveVer' style={{background:modalColor}}>
-                <span onClick={OptionXY} className="material-symbols-outlined cursor-pointer saveButton">
-                save
-                </span>
         </div>
     )
 }

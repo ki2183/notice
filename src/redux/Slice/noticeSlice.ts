@@ -44,3 +44,5 @@ export const noticeSlice = createSlice({
 export const { addNoticeArr,removeNoticeArr,startNotice, updateNoticeArr } = noticeSlice.actions
 export const selectNotice = (state: RootState) => state.notice
 export default noticeSlice.reducer
+
+//글 데이터 관리

@@ -1,11 +1,11 @@
-import React, { createContext, useEffect, useLayoutEffect } from 'react';
+import React, { useEffect } from 'react';
 import './App.css';
 import { useAppDispatch, useAppSelector } from './redux/hook';
 import { GlobalStyle } from './globalStyles/global-styles';
 import { Route, Routes } from 'react-router-dom';
-import { MainPage } from './page/mainPage';
-import { NoticePage } from './page/noticePage';
-import { ViewPage } from './page/viewPage';
+import { MainPage } from './Page/mainPage';
+import { NoticePage } from './Page/noticePage';
+import { ViewPage } from './Page/viewPage';
 import { changeTheme } from './redux/Slice/modeSlice';
 import { startNotice } from './redux/Slice/noticeSlice';
 
@@ -15,16 +15,6 @@ function App() {
   const dispatch = useAppDispatch()
 
   useEffect(()=>{
-    if(localStorage.getItem('theme') === "dark_mode"){
-        dispatch(changeTheme())
-    }
-    dispatch(startNotice())
-    const notice = localStorage.getItem('notice')
-    if(notice !== null)
-      console.log(JSON.parse(notice))
-  },[])
-
-  useEffect(()=>{
     localStorage.setItem('theme', theme.span);
   },[theme])
 
@@ -32,12 +22,20 @@ function App() {
     setTimeout(() => {
         localStorage.clear()
     }, 300000);
-  }
+  }  //30분 지나면 로컬 스토리지 삭제
 
   useEffect(()=>{
-      deleteLocalData()
-  },[])
+    
+    deleteLocalData()
+
+    if(localStorage.getItem('theme') === "dark_mode"){ //시작시 로컬에서 다크모드 불러옴
+        dispatch(changeTheme()) 
+    }
+    dispatch(startNotice()) //시작시 로컬에 저장된 글 불러오기
   
+  },[]) 
+
+
   return (
     <div className='overflow-x-hidden overflow-y-auto'>
       <GlobalStyle theme={theme} />

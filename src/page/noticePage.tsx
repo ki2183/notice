@@ -15,6 +15,7 @@ const [navControler,setNavControler] = useState(false)
 const scrollRef = useRef<HTMLDivElement>(null)
 
 const dispatch = useAppDispatch()
+
 useEffect(()=>{
     gsap.set(widthRef.current ,{
         gridTemplateColumns:'0rem auto'
