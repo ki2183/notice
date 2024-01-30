@@ -3,9 +3,9 @@ import './App.css';
 import { useAppDispatch, useAppSelector } from './redux/hook';
 import { GlobalStyle } from './globalStyles/global-styles';
 import { Route, Routes } from 'react-router-dom';
-import { MainPage } from './Page/mainPage';
-import { NoticePage } from './Page/noticePage';
-import { ViewPage } from './Page/viewPage';
+import { MainPage } from './routerPage/mainPage';
+import { NoticePage } from './routerPage/noticePage';
+import { ViewPage } from './routerPage/viewPage';
 import { changeTheme } from './redux/Slice/modeSlice';
 import { startNotice } from './redux/Slice/noticeSlice';
 
