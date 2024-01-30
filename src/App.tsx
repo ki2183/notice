@@ -15,7 +15,7 @@ function App() {
   const dispatch = useAppDispatch()
 
   useEffect(()=>{
-    if(localStorage.getItem('theme') === "light_mode"){
+    if(localStorage.getItem('theme') === "dark_mode"){
         dispatch(changeTheme())
     }
     dispatch(startNotice())
@@ -27,6 +27,16 @@ function App() {
   useEffect(()=>{
     localStorage.setItem('theme', theme.span);
   },[theme])
+
+  const deleteLocalData = () =>{
+    setTimeout(() => {
+        localStorage.clear()
+    }, 300000);
+  }
+
+  useEffect(()=>{
+      deleteLocalData()
+  },[])
   
   return (
     <div className='overflow-x-hidden overflow-y-auto'>
@@ -34,6 +44,7 @@ function App() {
       <Routes>
         <Route path='/' element={<MainPage/>}/>
         <Route path='/notice' element={<NoticePage/>}/>
+        <Route path='/update' element={<NoticePage/>}/>
         <Route path='/view' element={<ViewPage/>}/>
       </Routes>
     </div>

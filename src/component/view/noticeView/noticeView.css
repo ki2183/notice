@@ -74,4 +74,8 @@
     display: flex;
     align-items: center;
     padding-right: 0px;
+}.updateButton{
+    padding: 6px 9px 6px 9px;
+    font-size: 0.8rem;
+    border-radius: 4rem;
 }

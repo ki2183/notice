@@ -47,7 +47,6 @@ const scrollHandler = ()=>{
     if(scroll){
         const rateMax = scroll.scrollHeight-scroll.clientHeight
         const scrollValue = scroll.scrollTop
-        console.log(scrollValue/rateMax)
         dispatch(updateScollRate(scrollValue/rateMax))
         
     }

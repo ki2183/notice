@@ -1,9 +1,8 @@
 import { useAppSelector } from "../../../redux/hook";
 import "./noticeView.css";
 import { noticeTypeIMG, noticeTypeTEXT } from "../../notice/noticeType";
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Notice } from "../../../redux/Slice/noticeSlice";
-import { useEffect } from "react";
 
 function NoticeView(){
 
@@ -20,6 +19,7 @@ function NoticeView(){
             
             <>
             <ViewInfo
+                num = {num}
                 title={noticeInfo[num].title}
                 creationDate={noticeInfo[num].creationDate}
             />
@@ -61,13 +61,29 @@ function NoticeView(){
 type ViewInfoProp = {
     title:string;
     creationDate:string;
+    num:number
 }
 
-function ViewInfo({title,creationDate}:ViewInfoProp){
+function ViewInfo({title,creationDate,num}:ViewInfoProp){
+
+    const theme = useAppSelector(state => state.theme.theme)
+    const navigate = useNavigate()
+    const updateHandler = () => {
+        navigate(`/update?page=${num}`)
+    }
     return (
         <div className="frame-view-title">
             <span>{title}</span>
-            <span>{creationDate}</span>
+            <div className="flex flex-row item-center justify-between">
+                <span className="text-sm" style={{color:theme.lightText}}>{creationDate}</span>
+                <button 
+                    className="updateButton" 
+                    style={{background:theme.modal}}
+                    onClick={updateHandler}
+                >
+                    수정하기
+                </button>
+            </div>
         </div>
     )
 }

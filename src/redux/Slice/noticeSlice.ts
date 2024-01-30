@@ -26,7 +26,7 @@ export const noticeSlice = createSlice({
             state.splice(action.payload,1)
             localStorage.setItem('notice', JSON.stringify(state));
         },
-        editNoticeArr:(state,action:PayloadAction<{arrNotice:arrNotice,title:string,idx:number}>)=>{
+        updateNoticeArr:(state,action:PayloadAction<{arrNotice:arrNotice,title:string,idx:number}>)=>{
             const getData = action.payload
             const prevDataDate = state[getData.idx]?.creationDate
             state.splice(getData.idx,1,{arrNotice:getData.arrNotice,title:getData.title,creationDate:prevDataDate})
@@ -41,6 +41,6 @@ export const noticeSlice = createSlice({
     }
 })
 
-export const { addNoticeArr,removeNoticeArr,startNotice } = noticeSlice.actions
+export const { addNoticeArr,removeNoticeArr,startNotice, updateNoticeArr } = noticeSlice.actions
 export const selectNotice = (state: RootState) => state.notice
 export default noticeSlice.reducer

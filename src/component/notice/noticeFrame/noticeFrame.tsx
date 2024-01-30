@@ -6,8 +6,8 @@ import NoticeText from './noticeItem/noticeText'
 import NoticeImg from './noticeItem/noticeImg'
 import NoticeModal, { ModalItem } from './noticeItem/noticeModal'
 import { useAppDispatch, useAppSelector } from '../../../redux/hook'
-import { useNavigate } from 'react-router-dom'
-import { addNoticeArr } from '../../../redux/Slice/noticeSlice'
+import { useLocation, useNavigate } from 'react-router-dom'
+import { addNoticeArr, updateNoticeArr } from '../../../redux/Slice/noticeSlice'
 import gsap from 'gsap'
 import { getCurrentDate } from '../getDate'
 
@@ -27,8 +27,29 @@ export default function NoticeFrame(){
     const focusRef = useRef<Array<HTMLTextAreaElement|null>>([])
     const [optionXY,setOptionXY] = useState<{x:number,y:number,idx:number}>({x:0,y:0,idx:0})
     const modalRef = useRef<Array<ModalItem>>([])
+    const noticeTotalInfo = useAppSelector(state => state.notice)
     const dispatch = useAppDispatch()
     const navigate = useNavigate()
+    const [updateMode ,setUpdateMode] = useState<boolean>(false)
+
+    const location = useLocation()
+    const queryParams = new URLSearchParams(location.search)
+    const page = queryParams.get('page')
+
+    useEffect(()=>{
+        console.log(page)
+        if(page !== null && page !== undefined){
+            const intPage = parseInt(page)
+            console.log(intPage)
+            console.log(noticeTotalInfo.length)
+            if (noticeTotalInfo.length > intPage) {
+                setUpdateMode(true)
+                setNoticeInfo(noticeTotalInfo[intPage].arrNotice)
+                setTitle(noticeTotalInfo[intPage].title)
+              }
+        }
+       
+    },[])
 
     // #region
 
@@ -190,7 +211,8 @@ export default function NoticeFrame(){
 
     function getSaveButtonXY(x:number,y:number){
         setOptionXY({x:x,y:y,idx:0})
-        modalRef.current = [
+        const pageInt = page !== null && page !== undefined ? parseInt(page) : 0
+        const saveFunc = [
             {    
                 info:"저장하기",
                 spanIcon:"save",
@@ -204,6 +226,23 @@ export default function NoticeFrame(){
                 }
             }
         ]
+
+        const updateFunc = [
+            {    
+                info:"수정하기",
+                spanIcon:"save",
+                onclick: ()=>{
+                    if(title === ""){
+                        alert('제목이 비어있어요!')
+                        return
+                    }
+                    dispatch(updateNoticeArr({title:title,arrNotice:noticeInfo,idx:pageInt,}))
+                    navigate('/')
+                }
+            }
+        ]
+
+        modalRef.current = !updateMode ? saveFunc : updateFunc 
     }
     function getOptionXY(x:number,y:number,idx:number){
         setOptionXY({x:x,y:y,idx:idx})
@@ -235,7 +274,7 @@ export default function NoticeFrame(){
             <NoticeSaveButton getSaveButtonXY={getSaveButtonXY} openModal={openModal}/>
             <NoticeSaveButtonFixVer getSaveButtonXY={getSaveButtonXY} openModal={openModal}/>
             <div className="frame-notice">
-                <input type='text' className='notice-title' placeholder='제목 입력' onChange={titleChangeHandler}/>
+                <input type='text' value={title} className='notice-title' placeholder='제목 입력' onChange={titleChangeHandler}/>
                 {noticeInfo.map((item,idx)=>{
 
                     const textItem = (item as noticeTypeTEXT).text
